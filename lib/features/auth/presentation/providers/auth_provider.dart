@@ -1,4 +1,5 @@
 import 'package:chat_app/core/exceptions/firebase_exception_handler.dart';
+import 'package:chat_app/features/auth/data/datasources/local_auth_data_source.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +12,22 @@ import '../../domain/repositories/auth_repository.dart';
 import 'package:chat_app/core/exceptions/auth_exception.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepoImpl();
+  final localDataSource = ref.read(authLocalDataSourceProvider);
+  return AuthRepoImpl(localDataSource);
+});
+
+final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
+  return AuthLocalDataSourceImpl(); // or however you instantiate it
+});
+
+final splashNotifierProvider = FutureProvider<bool>((ref) async {
+  final repo = ref.read(authRepositoryProvider);
+  return await repo.isLoggedIn();
+});
+
+final currentUserProvider = Provider<UserEntity?>((ref) {
+  final authState = ref.watch(authStateProvider);
+  return authState.whenOrNull(data: (user) => user);
 });
 
 final authStateProvider =

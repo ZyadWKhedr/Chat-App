@@ -29,6 +29,7 @@ class ChatRepositoryImpl extends ChatRepository {
       senderId: message.senderId,
       text: message.text,
       timestamp: message.timestamp,
+      receiverId: message.receiverId,
     );
     socketService.sendMessage(model.toJson());
   }

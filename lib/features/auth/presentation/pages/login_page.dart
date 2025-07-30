@@ -64,6 +64,7 @@ class LoginPage extends ConsumerWidget {
                         );
 
                     ref.read(_isLoadingProvider.notifier).state = false;
+                    context.go(AppRoutes.listChat);
                   },
                 ),
             SizedBox(height: 4.h),

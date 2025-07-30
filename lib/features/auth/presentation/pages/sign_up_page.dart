@@ -58,7 +58,6 @@ class SignUpPage extends ConsumerWidget {
               CustomButton(
                 text: t.signUpButton,
                 onPressed: () async {
-                  await ref.read(authStateProvider.notifier).signOut(context);
                   await ref
                       .read(authStateProvider.notifier)
                       .signUp(

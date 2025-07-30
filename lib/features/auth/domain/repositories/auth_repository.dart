@@ -8,8 +8,11 @@ abstract class AuthRepository {
   );
   Future<UserEntity> signInWithEmail(String email, String password);
   Future<UserEntity?> getCurrentUser();
+   Future<bool> isLoggedIn();
+  Future<void> setLoggedIn(bool value);
   Future<void> signOut();
   Future<UserEntity> signInWithGoogle();
   Future<UserEntity> signInWithFacebook();
   Future<void> sendPasswordResetEmail(String email);
+  Future<List<UserEntity>> getAllUsers();
 }

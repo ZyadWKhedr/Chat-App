@@ -1,6 +1,7 @@
 class ChatMessage {
   final String id;
   final String senderId;
+  final String receiverId;
   final String text;
   final String? imageUrl;
   final String? audioPath;
@@ -9,6 +10,7 @@ class ChatMessage {
   ChatMessage({
     required this.id,
     required this.senderId,
+    required this.receiverId,
     required this.text,
     this.imageUrl,
     this.audioPath,
