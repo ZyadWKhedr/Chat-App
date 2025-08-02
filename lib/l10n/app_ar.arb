@@ -62,6 +62,9 @@
   "authSignOutFailed": "فشل تسجيل الخروج",
   "authResetPasswordSent": "تم إرسال رابط إعادة تعيين كلمة المرور",
   "authResetPasswordFailed": "فشل في إعادة تعيين كلمة المرور",
-  "authEmptyFieldsError": "برجاء مليء جميع الخانات"
+  "authEmptyFieldsError": "برجاء مليء جميع الخانات",
+
+   "chooseLanguage": "اختر اللغة",
+   "users": "المستخدمين"
 
 }

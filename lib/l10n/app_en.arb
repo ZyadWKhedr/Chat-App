@@ -60,5 +60,8 @@
   "authSignOutFailed": "Failed to sign out",
   "authResetPasswordSent": "Password reset link sent",
   "authResetPasswordFailed": "Failed to reset password",
-  "authEmptyFieldsError": "Please fill all fields"
+  "authEmptyFieldsError": "Please fill all fields",
+
+   "chooseLanguage": "Choose Language",
+   "users": "users"
 }

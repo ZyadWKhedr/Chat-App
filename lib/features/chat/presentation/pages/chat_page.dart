@@ -18,28 +18,42 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   Widget build(BuildContext context) {
-    final messages = ref.watch(chatMessagesProvider);
-    final currentUser = ref.watch(currentUserProvider)!;
+    final currentUserAsync = ref.watch(authStateProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.targetUser.name)),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final msg = messages[index];
+    return currentUserAsync.when(
+      loading:
+          () =>
+              const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error:
+          (err, stack) =>
+              Scaffold(body: Center(child: Text('Error loading user'))),
+      data: (currentUser) {
+        if (currentUser == null) {
+          return Scaffold(body: Center(child: Text('User not authenticated')));
+        }
 
-                final isMe = msg.senderId == currentUser.id;
-                return MessageBubble(message: msg, isMe: isMe);
-              },
-            ),
+        final messages = ref.watch(chatMessagesProvider);
+
+        return Scaffold(
+          appBar: AppBar(title: Text(widget.targetUser.name)),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final msg = messages[index];
+                    final isMe = msg.senderId == currentUser.id;
+                    return MessageBubble(message: msg, isMe: isMe);
+                  },
+                ),
+              ),
+              ChatInputBar(receiverId: widget.targetUser.id),
+            ],
           ),
-          ChatInputBar(receiverId: widget.targetUser.id),
-        ],
-      ),
+        );
+      },
     );
   }
 }

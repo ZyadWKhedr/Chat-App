@@ -17,7 +17,7 @@ class AppTheme {
       titleLarge: TextStyle(color: Colors.black),
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blueGrey,
       foregroundColor: Colors.black,
     ),
   );

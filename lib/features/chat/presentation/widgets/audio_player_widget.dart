@@ -58,28 +58,75 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     _isPlaying ? _player.pause() : _player.play();
   }
 
+  String _formatDuration(Duration d) {
+    final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-          onPressed: _togglePlay,
-        ),
-        Expanded(
-          child: Slider(
-            value: _position.inMilliseconds.toDouble(),
-            max: _duration.inMilliseconds.toDouble(),
-            onChanged: (value) {
-              _player.seek(Duration(milliseconds: value.toInt()));
-            },
+    return Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(
+              _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
+              size: 32,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: _togglePlay,
           ),
-        ),
-        Text(
-          "${_position.inSeconds}/${_duration.inSeconds}s",
-          style: const TextStyle(fontSize: 12),
-        ),
-      ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Slider(
+                  activeColor: Theme.of(context).primaryColor,
+                  thumbColor: Theme.of(context).primaryColor,
+                  value:
+                      _position.inMilliseconds
+                          .clamp(0, _duration.inMilliseconds)
+                          .toDouble(),
+                  max:
+                      (_duration.inMilliseconds > 0)
+                          ? _duration.inMilliseconds.toDouble()
+                          : 1.0,
+                  onChanged: (value) {
+                    _player.seek(Duration(milliseconds: value.toInt()));
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _formatDuration(_position),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    Text(
+                      _formatDuration(_duration),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

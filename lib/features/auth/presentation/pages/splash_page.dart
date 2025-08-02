@@ -27,14 +27,24 @@ class SplashPage extends ConsumerWidget {
       error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
       data: (isLoggedIn) {
         Future.microtask(() {
-          if (isLoggedIn) {
-            context.go(AppRoutes.listChat);
-          } else {
-            context.go(AppRoutes.login);
-          }
+          Future.delayed(Duration(seconds: 2), () {
+            if (isLoggedIn) {
+              context.go(AppRoutes.listChat);
+            } else {
+              context.go(AppRoutes.login);
+            }
+          });
         });
 
-        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        return Scaffold(
+          body: Center(
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: 50.sp,
+              height: 50.sp,
+            ),
+          ),
+        );
       },
     );
   }

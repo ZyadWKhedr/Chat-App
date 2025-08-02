@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_app/features/auth/domain/entities/user_entity.dart';
 import 'package:chat_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:chat_app/features/chat/data/repositories/chat_repository_impl.dart';
@@ -17,7 +19,6 @@ final allUsersProvider = FutureProvider<List<UserEntity>>((ref) async {
   final authRepo = ref.read(authRepositoryProvider);
   return await authRepo.getAllUsers(); // Implement this in your repo
 });
-
 
 final chatRepositoryProvider = Provider<ChatRepository>((ref) {
   final socketService = ref.read(socketServiceProvider);
@@ -54,5 +55,17 @@ class ChatNotifier extends StateNotifier<List<ChatMessage>> {
   void sendMessage(ChatMessage message) {
     ref.read(sendMessageUseCaseProvider).call(message);
     state = [...state, message];
+  }
+
+  Future<void> sendImage(File file, String receiverId) async {
+    await repository.sendImageMessage(file, receiverId);
+  }
+
+  Future<void> sendAudio(File file, String receiverId) async {
+    await repository.sendAudioMessage(file, receiverId);
+  }
+
+  Future<String> uploadFile(File file) {
+    return repository.uploadFile(file);
   }
 }

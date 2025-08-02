@@ -1,3 +1,4 @@
+import 'package:chat_app/core/providers/language_provider.dart';
 import 'package:chat_app/core/route/router.dart';
 import 'package:chat_app/core/theme/app_theme.dart';
 import 'package:chat_app/core/theme/theme_notifier.dart';
@@ -23,6 +24,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeNotifierProvider);
+    final locale = ref.watch(localeProvider);
 
     return Sizer(
       builder: (context, orientation, deviceType) {
@@ -32,7 +34,7 @@ class MyApp extends ConsumerWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: themeMode,
           debugShowCheckedModeBanner: false,
-          locale: const Locale('en'),
+          locale: locale,
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,

@@ -5,6 +5,7 @@ import 'package:chat_app/features/chat/domain/entities/chat_message.dart';
 import 'package:chat_app/features/chat/presentation/providers/chat_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sizer/sizer.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatInputBar extends ConsumerStatefulWidget {
@@ -93,23 +94,57 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          IconButton(icon: const Icon(Icons.image), onPressed: _sendImage),
+          IconButton(
+            icon: const Icon(Icons.image),
+            onPressed: _sendImage,
+            tooltip: 'Send Image',
+          ),
           IconButton(
             icon: Icon(isRecording ? Icons.stop : Icons.mic),
             onPressed: _toggleRecording,
+            tooltip: isRecording ? 'Stop Recording' : 'Start Recording',
           ),
           Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(hintText: 'Type a message'),
+            child: Container(
+              constraints: BoxConstraints(
+                minHeight: 48,
+                maxHeight: 120,
+              ), // ~3 lines max
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(20.sp),
+                border: Border.all(color: Colors.grey.shade400),
+              ),
+              child: Scrollbar(
+                child: TextField(
+                  controller: _controller,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null, // allow growing
+                  minLines: 1,
+                  style: const TextStyle(fontSize: 15),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    isCollapsed: true,
+                    hintText: 'Type a message...',
+                  ),
+                ),
+              ),
             ),
           ),
-          IconButton(icon: const Icon(Icons.send), onPressed: _sendText),
+          SizedBox(width: 2.w),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: _sendText,
+            tooltip: 'Send Message',
+          ),
         ],
       ),
     );
