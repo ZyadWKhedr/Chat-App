@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {

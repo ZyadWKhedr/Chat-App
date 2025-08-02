@@ -61,7 +61,11 @@
   "authResetPasswordSent": "Password reset link sent",
   "authResetPasswordFailed": "Failed to reset password",
   "authEmptyFieldsError": "Please fill all fields",
+  "haveAccount":"Already have an account?",
+  "dontHaveAccount":"Dont have an account?",
 
    "chooseLanguage": "Choose Language",
-   "users": "users"
+   "users": "users",
+
+   "chatHint": "Enter your message"
 }

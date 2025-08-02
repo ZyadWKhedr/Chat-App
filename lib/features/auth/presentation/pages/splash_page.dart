@@ -13,39 +13,37 @@ class SplashPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final splashAsync = ref.watch(splashNotifierProvider);
 
-    return splashAsync.when(
-      loading:
-          () => Scaffold(
-            body: Center(
-              child: Image.asset(
+    ref.listen(splashNotifierProvider, (previous, next) {
+      next.whenOrNull(
+        data: (isLoggedIn) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Future.delayed(const Duration(seconds: 2), () {
+              final route = isLoggedIn ? AppRoutes.listChat : AppRoutes.login;
+              context.go(route);
+            });
+          });
+        },
+      );
+    });
+
+    return Scaffold(
+      body: Center(
+        child: splashAsync.when(
+          loading:
+              () => Image.asset(
                 'assets/images/logo.png',
                 width: 50.sp,
                 height: 50.sp,
               ),
-            ),
-          ),
-      error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
-      data: (isLoggedIn) {
-        Future.microtask(() {
-          Future.delayed(Duration(seconds: 2), () {
-            if (isLoggedIn) {
-              context.go(AppRoutes.listChat);
-            } else {
-              context.go(AppRoutes.login);
-            }
-          });
-        });
-
-        return Scaffold(
-          body: Center(
-            child: Image.asset(
-              'assets/images/logo.png',
-              width: 50.sp,
-              height: 50.sp,
-            ),
-          ),
-        );
-      },
+          error: (err, stack) => Text('Error: $err'),
+          data:
+              (_) => Image.asset(
+                'assets/images/logo.png',
+                width: 50.sp,
+                height: 50.sp,
+              ),
+        ),
+      ),
     );
   }
 }

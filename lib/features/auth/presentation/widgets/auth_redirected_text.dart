@@ -1,6 +1,7 @@
 import 'package:chat_app/core/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthRedirectText extends StatelessWidget {
   final bool isLogin;
@@ -14,17 +15,18 @@ class AuthRedirectText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          isLogin ? "Don't have an account? " : "Already have an account? ",
+          isLogin ? l.dontHaveAccount : l.haveAccount,
           style: AppTextStyles.bodyLarge(context),
         ),
         GestureDetector(
           onTap: onTap,
           child: Text(
-            isLogin ? "Sign Up" : "Log In",
+            isLogin ? l.loginButton : l.signUpButton,
             style: TextStyle(
               fontSize: 14.sp,
               color: Colors.blue,

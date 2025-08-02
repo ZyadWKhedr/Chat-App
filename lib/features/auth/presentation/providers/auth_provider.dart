@@ -1,12 +1,13 @@
 import 'package:chat_app/core/exceptions/firebase_exception_handler.dart';
+import 'package:chat_app/core/route/routes.dart';
 import 'package:chat_app/features/auth/data/datasources/local_auth_data_source.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:chat_app/core/utils/toasts.dart';
 import 'package:chat_app/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import 'package:chat_app/core/exceptions/auth_exception.dart';
@@ -17,7 +18,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
-  return AuthLocalDataSourceImpl(); // or however you instantiate it
+  return AuthLocalDataSourceImpl();
 });
 
 final splashNotifierProvider = FutureProvider<bool>((ref) async {
@@ -70,6 +71,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserEntity?>> {
       state = const AsyncValue.loading();
       final user = await repository.signUpWithEmail(name, email, password);
       state = AsyncValue.data(user);
+      context.go(AppRoutes.listChat);
       ToastService.show(loc.authSignUpSuccess);
     } on AuthException catch (e) {
       ToastService.show(e.code);
@@ -92,7 +94,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserEntity?>> {
     final loc = AppLocalizations.of(context)!;
 
     if (email.isEmpty || password.isEmpty) {
-      ToastService.show(loc.authEmptyFieldsError ?? 'Please fill all fields');
+      ToastService.show(loc.authEmptyFieldsError);
       return;
     }
 
@@ -100,6 +102,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserEntity?>> {
       state = const AsyncLoading();
       final user = await repository.signInWithEmail(email, password);
       state = AsyncData(user);
+      context.go(AppRoutes.listChat);
       ToastService.show(loc.authSignInSuccess);
     } on AuthException catch (e) {
       ToastService.show(e.code);
@@ -114,31 +117,31 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserEntity?>> {
     }
   }
 
-  Future<void> signInWithGoogle(BuildContext context) async {
-    final loc = AppLocalizations.of(context)!;
-    try {
-      state = const AsyncValue.loading();
-      final user = await repository.signInWithGoogle();
-      state = AsyncValue.data(user);
-      ToastService.show(loc.authSignInGoogleSuccess);
-    } catch (_) {
-      ToastService.show(loc.authSignInGoogleFailed);
-      state = const AsyncValue.data(null);
-    }
-  }
+  // Future<void> signInWithGoogle(BuildContext context) async {
+  //   final loc = AppLocalizations.of(context)!;
+  //   try {
+  //     state = const AsyncValue.loading();
+  //     final user = await repository.signInWithGoogle();
+  //     state = AsyncValue.data(user);
+  //     ToastService.show(loc.authSignInGoogleSuccess);
+  //   } catch (_) {
+  //     ToastService.show(loc.authSignInGoogleFailed);
+  //     state = const AsyncValue.data(null);
+  //   }
+  // }
 
-  Future<void> signInWithFacebook(BuildContext context) async {
-    final loc = AppLocalizations.of(context)!;
-    try {
-      state = const AsyncValue.loading();
-      final user = await repository.signInWithFacebook();
-      state = AsyncValue.data(user);
-      ToastService.show(loc.authSignInFacebookSuccess);
-    } catch (_) {
-      ToastService.show(loc.authSignInFacebookFailed);
-      state = const AsyncValue.data(null);
-    }
-  }
+  // Future<void> signInWithFacebook(BuildContext context) async {
+  //   final loc = AppLocalizations.of(context)!;
+  //   try {
+  //     state = const AsyncValue.loading();
+  //     final user = await repository.signInWithFacebook();
+  //     state = AsyncValue.data(user);
+  //     ToastService.show(loc.authSignInFacebookSuccess);
+  //   } catch (_) {
+  //     ToastService.show(loc.authSignInFacebookFailed);
+  //     state = const AsyncValue.data(null);
+  //   }
+  // }
 
   Future<void> signOut(BuildContext context) async {
     final loc = AppLocalizations.of(context)!;
@@ -156,7 +159,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserEntity?>> {
     final loc = AppLocalizations.of(context)!;
 
     if (email.isEmpty) {
-      ToastService.show(loc.authEmptyFieldsError ?? 'Please enter your email');
+      ToastService.show(loc.authEmptyFieldsError);
       return;
     }
 

@@ -27,8 +27,10 @@ class AuthRepoImpl implements AuthRepository {
         email: email,
         password: password,
       );
+
       final user = result.user;
       if (user == null) throw const AuthException('user-not-found');
+      await localDataSource.setLoggedIn(true);
       return UserModel.fromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {
       throw AuthException(e.code.replaceAll('.', ''));
@@ -46,7 +48,7 @@ class AuthRepoImpl implements AuthRepository {
         email: email,
         password: password,
       );
-
+      await localDataSource.setLoggedIn(true);
       final user = result.user;
       if (user == null) throw Exception('Signup failed. No user returned.');
 
@@ -73,7 +75,7 @@ class AuthRepoImpl implements AuthRepository {
 
   @override
   Future<bool> isLoggedIn() async {
-    return FirebaseAuth.instance.currentUser != null;
+    return await localDataSource.isLoggedIn(); 
   }
 
   @override
@@ -89,6 +91,7 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
+    await localDataSource.setLoggedIn(false);
   }
 
   @override

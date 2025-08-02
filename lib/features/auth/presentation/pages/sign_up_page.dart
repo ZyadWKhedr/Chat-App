@@ -13,7 +13,6 @@ import 'package:sizer/sizer.dart';
 
 class SignUpPage extends ConsumerWidget {
   const SignUpPage({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final nameController = TextEditingController();
@@ -21,62 +20,77 @@ class SignUpPage extends ConsumerWidget {
     final passwordController = TextEditingController();
     final t = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: const ThemeToggleButton(),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(15.sp),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(t.signUpTitle, style: AppTextStyles.heading1(context)),
-              SizedBox(height: 1.h),
-              Text(t.signUpSubtitle, style: AppTextStyles.heading2(context)),
-              SizedBox(height: 3.h),
+    final authState = ref.watch(authStateProvider);
+    final isLoading = authState.isLoading; // assuming you expose this
 
-              // Name field
-              CustomTextFormField(
-                hintText: t.nameHint,
-                controller: nameController,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            leading: const ThemeToggleButton(),
+          ),
+          body: Padding(
+            padding: EdgeInsets.all(15.sp),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(t.signUpTitle, style: AppTextStyles.heading1(context)),
+                  SizedBox(height: 1.h),
+                  Text(
+                    t.signUpSubtitle,
+                    style: AppTextStyles.heading2(context),
+                  ),
+                  SizedBox(height: 3.h),
+
+                  CustomTextFormField(
+                    hintText: t.nameHint,
+                    controller: nameController,
+                  ),
+                  SizedBox(height: 3.h),
+                  CustomTextFormField(
+                    hintText: t.emailHint,
+                    controller: emailController,
+                  ),
+                  SizedBox(height: 3.h),
+                  CustomTextFormField(
+                    hintText: t.passwordHint,
+                    controller: passwordController,
+                    isPassword: true,
+                  ),
+                  SizedBox(height: 4.h),
+                  CustomButton(
+                    text: t.signUpButton,
+                    onPressed: () async {
+                      await ref
+                          .read(authStateProvider.notifier)
+                          .signUp(
+                            nameController.text.trim(),
+                            emailController.text.trim(),
+                            passwordController.text.trim(),
+                            context,
+                          );
+                    },
+                  ),
+                  SizedBox(height: 4.h),
+                  AuthRedirectText(
+                    isLogin: false,
+                    onTap: () => context.go(AppRoutes.login),
+                  ),
+                ],
               ),
-              SizedBox(height: 3.h),
-              CustomTextFormField(
-                hintText: t.emailHint,
-                controller: emailController,
-              ),
-              SizedBox(height: 3.h),
-              CustomTextFormField(
-                hintText: t.passwordHint,
-                controller: passwordController,
-                isPassword: true,
-              ),
-              SizedBox(height: 4.h),
-              CustomButton(
-                text: t.signUpButton,
-                onPressed: () async {
-                  await ref
-                      .read(authStateProvider.notifier)
-                      .signUp(
-                        nameController.text.trim(),
-                        emailController.text.trim(),
-                        passwordController.text.trim(),
-                        context,
-                      );
-                },
-              ),
-              SizedBox(height: 4.h),
-              AuthRedirectText(
-                isLogin: false,
-                onTap: () => context.go(AppRoutes.login),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+
+        // 👇 Full screen loading indicator
+        if (isLoading)
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+      ],
     );
   }
 }

@@ -1,10 +1,13 @@
+import 'package:chat_app/core/route/routes.dart';
 import 'package:chat_app/core/widgets/language_dialog.dart';
 import 'package:chat_app/core/widgets/theme_toggle_button.dart';
+import 'package:chat_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:chat_app/features/chat/presentation/pages/chat_page.dart';
 import 'package:chat_app/features/chat/presentation/providers/chat_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 class UserListPage extends ConsumerWidget {
   const UserListPage({super.key});
@@ -14,6 +17,13 @@ class UserListPage extends ConsumerWidget {
     final users = ref.watch(allUsersProvider);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.logout),
+        onPressed: () {
+          ref.read(authStateProvider.notifier).signOut;
+          context.go(AppRoutes.login);
+        },
+      ),
       body: users.when(
         data:
             (list) => CustomScrollView(
